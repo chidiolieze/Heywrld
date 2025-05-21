@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, doublePrecision, relations } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, doublePrecision } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -18,14 +19,11 @@ export const users = pgTable("users", {
   country: text("country").default("Nigeria"),
 });
 
-export const insertUserSchema = createInsertSchema(users).omit({
+export const insertUserSchema = createInsertSchema(users, {
+  isAdmin: z.boolean().default(false),
+}).omit({
   id: true,
-  isAdmin: true,
 });
-
-export const usersRelations = relations(users, ({ many }) => ({
-  orders: many(orders),
-}));
 
 // Categories
 export const categories = pgTable("categories", {
@@ -40,10 +38,6 @@ export const categories = pgTable("categories", {
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,
 });
-
-export const categoriesRelations = relations(categories, ({ many }) => ({
-  products: many(products),
-}));
 
 // Products
 export const products = pgTable("products", {
@@ -65,14 +59,6 @@ export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
   createdAt: true,
 });
-
-export const productsRelations = relations(products, ({ one, many }) => ({
-  category: one(categories, {
-    fields: [products.categoryId],
-    references: [categories.id],
-  }),
-  orderItems: many(orderItems),
-}));
 
 // Orders
 export const orders = pgTable("orders", {
@@ -99,14 +85,6 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
   createdAt: true,
 });
 
-export const ordersRelations = relations(orders, ({ one, many }) => ({
-  user: one(users, {
-    fields: [orders.userId],
-    references: [users.id],
-  }),
-  items: many(orderItems),
-}));
-
 // Order Items
 export const orderItems = pgTable("order_items", {
   id: serial("id").primaryKey(),
@@ -119,6 +97,31 @@ export const orderItems = pgTable("order_items", {
 export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
   id: true,
 });
+
+// Define relations after all tables have been defined
+export const usersRelations = relations(users, ({ many }) => ({
+  orders: many(orders),
+}));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  products: many(products),
+}));
+
+export const productsRelations = relations(products, ({ one, many }) => ({
+  category: one(categories, {
+    fields: [products.categoryId],
+    references: [categories.id],
+  }),
+  orderItems: many(orderItems),
+}));
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  items: many(orderItems),
+}));
 
 export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   order: one(orders, {
