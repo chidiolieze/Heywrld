@@ -136,7 +136,7 @@ export function Footer() {
         <div className="border-t border-gray-800 pt-6 mt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              &copy; {currentYear} Heywrld Enterprise. All rights reserved.
+              &copy; {currentYear} Heywrld Enterprise. All rights reserved. Built by Fluxxx Studios.
             </p>
             
             <div className="mt-4 md:mt-0">
