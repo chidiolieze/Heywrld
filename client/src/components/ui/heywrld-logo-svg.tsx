@@ -39,11 +39,11 @@ export function HeywrldLogo({ variant = "full", className, size = "md" }: LogoPr
         </svg>
       </div>
       <div className="ml-2 flex flex-col">
-        <span className={cn("font-bold text-foreground", 
+        <span className={cn("font-bold text-white", 
           size === "sm" ? "text-lg" : size === "md" ? "text-xl" : "text-2xl")}>
           Heywrld
         </span>
-        <span className={cn("text-primary", 
+        <span className={cn("text-white/80", 
           size === "sm" ? "text-xs" : size === "md" ? "text-sm" : "text-base")}>
           enterprise
         </span>
